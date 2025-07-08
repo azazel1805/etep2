@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: gemini-qna-app
+    env: node
+    plan: free # Or your preferred plan
+    buildCommand: "cd backend && npm install"
+    startCommand: "node backend/server.js"
+    envVars:
+      - key: GEMINI_API_KEY
+        fromSecret: true # This tells Render to look for a secret variable
+      - key: NODE_VERSION
+        value: 18 # Specify a Node version

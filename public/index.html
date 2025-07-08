@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI-Powered Q&A App</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>AI-Powered Question & Answer App</h1>
+    </header>
+
+    <main>
+        <!-- Question Type 1: Paragraph Matching -->
+        <section class="question-card" id="q1-card">
+            <h2>Question 1: Paragraph Matching</h2>
+            <div class="essay-container" id="q1-essay"></div>
+            <div class="questions-container" id="q1-questions"></div>
+            <button id="q1-eval-btn">Evaluate with AI</button>
+            <div class="result-container" id="q1-result"></div>
+        </section>
+
+        <!-- Question Type 2: Multiple Choice -->
+        <section class="question-card" id="q2-card">
+            <h2>Question 2: Multiple Choice Comprehension</h2>
+            <div class="essay-container" id="q2-essay"></div>
+            <div class="questions-container" id="q2-questions"></div>
+            <button id="q2-eval-btn">Evaluate with AI</button>
+            <div class="result-container" id="q2-result"></div>
+        </section>
+
+        <!-- Question Type 3: Fill in the Blank -->
+        <section class="question-card" id="q3-card">
+            <h2>Question 3: Fill in the Blanks</h2>
+            <div class="essay-container" id="q3-essay"></div>
+            <div class="questions-container" id="q3-questions"></div>
+            <button id="q3-eval-btn">Evaluate with AI</button>
+            <div class="result-container" id="q3-result"></div>
+        </section>
+
+        <!-- Question Type 4: Spoken Answer -->
+        <section class="question-card" id="q4-card">
+            <h2>Question 4: Spoken Answer</h2>
+            <div class="questions-container" id="q4-question"></div>
+            <div class="speech-controls">
+                <button id="speech-btn">Start Recording (45s)</button>
+                <p>Status: <span id="speech-status">Idle</span></p>
+            </div>
+            <textarea id="speech-transcript" rows="4" placeholder="Your transcribed speech will appear here..." readonly></textarea>
+            <button id="q4-eval-btn" disabled>Evaluate with AI</button>
+            <div class="result-container" id="q4-result"></div>
+        </section>
+    </main>
+
+    <div class="loader-overlay" id="loader">
+        <div class="spinner"></div>
+        <p>AI is thinking...</p>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
