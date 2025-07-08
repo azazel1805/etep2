@@ -22,7 +22,7 @@
             <h2>Question 1: Paragraph Matching</h2>
             <div class="essay-container" id="q1-essay"></div>
             <div class="questions-container" id="q1-questions"></div>
-            <button id="q1-eval-btn">Evaluate with AI</button>
+            <button id="q1-eval-btn">Evaluate</button>
             <div class="result-container" id="q1-result"></div>
         </section>
 
@@ -31,7 +31,7 @@
             <h2>Question 2: Multiple Choice Comprehension</h2>
             <div class="essay-container" id="q2-essay"></div>
             <div class="questions-container" id="q2-questions"></div>
-            <button id="q2-eval-btn">Evaluate with AI</button>
+            <button id="q2-eval-btn">Evaluate</button>
             <div class="result-container" id="q2-result"></div>
         </section>
 
@@ -40,7 +40,7 @@
             <h2>Question 3: Fill in the Blanks</h2>
             <div class="essay-container" id="q3-essay"></div>
             <div class="questions-container" id="q3-questions"></div>
-            <button id="q3-eval-btn">Evaluate with AI</button>
+            <button id="q3-eval-btn">Evaluate</button>
             <div class="result-container" id="q3-result"></div>
         </section>
 
@@ -56,6 +56,41 @@
             <button id="q4-eval-btn" disabled>Evaluate with AI</button>
             <div class="result-container" id="q4-result"></div>
         </section>
+
+        <!-- ================================== -->
+        <!-- =====   ADDED SECTIONS START   ===== -->
+        <!-- ================================== -->
+
+        <!-- Question Type 5: Dialogue Comprehension -->
+        <section class="question-card" id="q5-card">
+            <h2>Question 5: Dialogue Comprehension</h2>
+            <div id="q5-content">
+                <p><strong>Topic:</strong> <span id="q5-topic">Loading...</span></p>
+                <button id="q5-play-btn" disabled>▶️ Play Dialogue</button>
+                <p>Status: <span id="q5-status">Waiting for voices...</span></p>
+            </div>
+            <div class="questions-container" id="q5-questions-part1" style="display: none;"></div>
+            <div class="questions-container" id="q5-questions-part2" style="display: none;"></div>
+            <button id="q5-eval-btn" style="display: none;">Evaluate</button>
+            <div class="result-container" id="q5-result"></div>
+        </section>
+
+        <!-- Question Type 6: Speaker Matching -->
+        <section class="question-card" id="q6-card">
+            <h2>Question 6: Who Said It?</h2>
+            <div id="q6-content">
+                 <p><strong>Topic:</strong> <span id="q6-topic">Loading...</span></p>
+                 <div class="monologue-container" id="q6-monologues"></div>
+            </div>
+            <div class="questions-container" id="q6-questions"></div>
+            <button id="q6-eval-btn">Evaluate</button>
+            <div class="result-container" id="q6-result"></div>
+        </section>
+        
+        <!-- ================================ -->
+        <!-- =====    ADDED SECTIONS END    ===== -->
+        <!-- ================================ -->
+
     </main>
 
     <div class="loader-overlay" id="loader">
