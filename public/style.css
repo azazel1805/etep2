@@ -47,6 +47,24 @@ button:disabled { background-color: #a0c3e6; cursor: not-allowed; }
 .correct { background-color: #d4edda; border-left: 4px solid #28a745; }
 .incorrect { background-color: #f8d7da; border-left: 4px solid #dc3545; }
 
+.new-questions-container {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+#new-questions-btn {
+    font-size: 1.1rem;
+    font-weight: bold;
+    background-color: #28a745; /* A nice green color */
+    border-color: #28a745;
+    padding: 0.75em 1.5em;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+#new-questions-btn:hover:not(:disabled) {
+    background-color: #218838;
+}
+
 /* Speech Controls */
 .speech-controls { display: flex; align-items: center; gap: 1rem; margin: 1rem 0; }
 #speech-btn.recording { background-color: #dc3545; }
