@@ -3,10 +3,11 @@ services:
     name: gemini-qna-app
     env: node
     plan: free # Or your preferred plan
-    buildCommand: "cd backend && npm install"
-    startCommand: "node backend/server.js"
+    rootDir: backend # Specify the root directory for build and start commands
+    buildCommand: "npm install"
+    startCommand: "node server.js"
     envVars:
       - key: GEMINI_API_KEY
-        fromSecret: true # This tells Render to look for a secret variable
+        sync: false # CORRECT: This tells Render to manage the value in the dashboard
       - key: NODE_VERSION
-        value: 18 # Specify a Node version
+        value: 18
