@@ -8,13 +8,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- TTS (Text-to-Speech) SETUP ---
     function loadVoices() {
         voices = window.speechSynthesis.getVoices();
-        // These names might vary by browser/OS. This is a best-effort selection.
         femaleVoice = voices.find(v => v.lang.startsWith('en') && v.name.includes('Female')) || voices.find(v => v.lang.startsWith('en') && v.gender === 'female') || voices.find(v => v.lang.startsWith('en-US'));
         maleVoice = voices.find(v => v.lang.startsWith('en') && v.name.includes('Male')) || voices.find(v => v.lang.startsWith('en') && v.gender === 'male') || voices.find(v => v.lang.startsWith('en-GB'));
         
         const q5playBtn = document.getElementById('q5-play-btn');
         const q5status = document.getElementById('q5-status');
-
         if (q5playBtn && q5status) {
              if(femaleVoice && maleVoice) {
                 q5status.textContent = 'Ready to play.';
@@ -30,6 +28,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     function speak(text, voice) {
         return new Promise(resolve => {
+            if (window.speechSynthesis.speaking) {
+                window.speechSynthesis.cancel(); // Stop any current speech
+            }
             const utterance = new SpeechSynthesisUtterance(text);
             utterance.voice = voice;
             utterance.rate = 0.95;
@@ -59,7 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- Question Setup Functions (Renderers) ---
-
+    // setupParagraphMatching, setupMultipleChoice, setupFillInTheBlank, setupSpokenAnswer remain the same...
     function setupParagraphMatching(qData) {
         const essayEl = document.getElementById('q1-essay');
         const questionsEl = document.getElementById('q1-questions');
@@ -84,7 +85,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         };
     }
-
     function setupMultipleChoice(qData) {
         const essayEl = document.getElementById('q2-essay');
         const questionsEl = document.getElementById('q2-questions');
@@ -110,7 +110,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         };
     }
-
     function setupFillInTheBlank(qData) {
         const essayEl = document.getElementById('q3-essay');
         const questionsEl = document.getElementById('q3-questions');
@@ -137,14 +136,14 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         };
     }
-    
     function setupSpokenAnswer(qData) {
         document.getElementById('q4-question').innerHTML = `<p>${qData.question}</p>`;
         document.getElementById('q4-result').innerHTML = '';
         document.getElementById('speech-transcript').value = '';
         document.getElementById('q4-eval-btn').onclick = () => alert("Evaluation for spoken answers would require a separate AI call and is handled differently.");
     }
-
+    
+    // --- MODIFIED FUNCTION ---
     function setupDialogueComprehension(qData) {
         document.getElementById('q5-topic').textContent = qData.topic;
         const playBtn = document.getElementById('q5-play-btn');
@@ -159,23 +158,31 @@ document.addEventListener('DOMContentLoaded', () => {
         
         playBtn.onclick = async () => {
             playBtn.disabled = true;
+            playBtn.classList.add('playing');
             statusEl.textContent = 'Playing Part 1...';
-            for (const item of qData.dialoguePart1) await speak(`${item.speaker}: ${item.line}`, item.speaker === qData.speakers[0] ? femaleVoice : maleVoice);
+            for (const item of qData.dialoguePart1) {
+                const voice = item.speaker === qData.speakers[0] ? femaleVoice : maleVoice;
+                // MODIFICATION: Only speak the line, not the speaker's name
+                await speak(item.line, voice);
+            }
             q1Container.innerHTML = '<h4>Part 1 Questions:</h4>' + qData.questionsPart1.map((q, i) => `<div class="question"><p><strong>${i+1}.</strong> ${q.q}</p>${q.options.map(opt => `<label><input type="radio" name="q5p1-ans-${i}" value="${opt}"> ${opt}</label>`).join('<br>')}</div>`).join('');
             q1Container.style.display = 'block';
 
             statusEl.textContent = 'Playing Part 2...';
-            for (const item of qData.dialoguePart2) await speak(`${item.speaker}: ${item.line}`, item.speaker === qData.speakers[0] ? femaleVoice : maleVoice);
+            for (const item of qData.dialoguePart2) {
+                const voice = item.speaker === qData.speakers[0] ? femaleVoice : maleVoice;
+                // MODIFICATION: Only speak the line, not the speaker's name
+                await speak(item.line, voice);
+            }
             q2Container.innerHTML = '<h4>Part 2 Questions:</h4>' + qData.questionsPart2.map((q, i) => `<div class="question"><p><strong>${i+4}.</strong> ${q.q}</p>${q.options.map(opt => `<label><input type="radio" name="q5p2-ans-${i}" value="${opt}"> ${opt}</label>`).join('<br>')}</div>`).join('');
             q2Container.style.display = 'block';
             evalBtn.style.display = 'block';
+            playBtn.classList.remove('playing');
+            statusEl.textContent = 'Dialogue finished.';
         };
 
         evalBtn.onclick = async () => {
-            const userAnswers = [
-                ...qData.questionsPart1.map((_, i) => document.querySelector(`input[name="q5p1-ans-${i}"]:checked`)?.value || ""),
-                ...qData.questionsPart2.map((_, i) => document.querySelector(`input[name="q5p2-ans-${i}"]:checked`)?.value || "")
-            ];
+            const userAnswers = [...qData.questionsPart1.map((_, i) => document.querySelector(`input[name="q5p1-ans-${i}"]:checked`)?.value || ""), ...qData.questionsPart2.map((_, i) => document.querySelector(`input[name="q5p2-ans-${i}"]:checked`)?.value || "")];
             if (userAnswers.some(a => !a)) return alert('Please answer all questions.');
             const correctAnswers = [...qData.questionsPart1.map(q => q.correctAnswer), ...qData.questionsPart2.map(q => q.correctAnswer)];
             const result = await evaluate({ userAnswers, correctAnswers });
@@ -183,14 +190,42 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     }
     
+    // --- COMPLETELY REWRITTEN FUNCTION ---
     function setupSpeakerMatching(qData) {
         document.getElementById('q6-topic').textContent = qData.topic;
-        document.getElementById('q6-monologues').innerHTML = Object.entries(qData.monologues).map(([speaker, text]) => `<div class="monologue"><strong>${speaker}:</strong> ${text}</div>`).join('');
+        const monologuesContainer = document.getElementById('q6-monologues');
         const questionsEl = document.getElementById('q6-questions');
         const evalBtn = document.getElementById('q6-eval-btn');
         const resultEl = document.getElementById('q6-result');
 
         resultEl.innerHTML = '';
+        monologuesContainer.innerHTML = '<p>Listen to each speaker\'s opinion:</p>'; // Initial text
+
+        const speakerEntries = Object.entries(qData.monologues);
+
+        // Create a play button for each speaker
+        speakerEntries.forEach(([speaker, monologueText], index) => {
+            const button = document.createElement('button');
+            button.textContent = `▶️ Play ${speaker}'s Opinion`;
+            button.className = 'speaker-play-btn';
+            button.dataset.speakerIndex = index; // Store index for voice selection
+            
+            button.onclick = async () => {
+                const allButtons = monologuesContainer.querySelectorAll('.speaker-play-btn');
+                allButtons.forEach(btn => btn.disabled = true); // Disable all buttons
+                button.classList.add('playing');
+
+                // Assign voice based on index (e.g., first 2 female, next 2 male)
+                const voice = (index < 2) ? femaleVoice : maleVoice;
+                await speak(monologueText, voice);
+
+                button.classList.remove('playing');
+                allButtons.forEach(btn => btn.disabled = false); // Re-enable all buttons
+            };
+            monologuesContainer.appendChild(button);
+        });
+
+        // Setup the matching questions (this part remains the same)
         questionsEl.innerHTML = '<h4>Who said the following?</h4>' + qData.questions.map((q, i) => `
             <div class="question"><p><strong>${i+1}.</strong> <em>"${q.keySentence}"</em></p>
             ${qData.speakers.map(s => `<label><input type="radio" name="q6-ans-${i}" value="${s}">${s}</label>`).join('<br>')}</div>
