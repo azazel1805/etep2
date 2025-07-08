@@ -78,6 +78,39 @@ button:disabled { background-color: #a0c3e6; cursor: not-allowed; }
     background: #f9f9f9;
 }
 
+/* ================================== */
+/* =====    NEW STYLES START      ===== */
+/* ================================== */
+
+/* Style for the Dialogue Play Button when active */
+#q5-play-btn.playing {
+    background-color: #ffc107; /* A yellow "warning" color */
+    color: #212529;
+    border-color: #ffc107;
+}
+
+/* Styles for the "Who Said It?" monologues */
+.monologue-container {
+    margin: 1.5rem 0;
+}
+.monologue {
+    background: #f8f9fa;
+    border-left: 4px solid #6c757d; /* A neutral grey */
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 0 4px 4px 0;
+}
+.monologue strong {
+    color: #495057; /* Darker text for the speaker's name */
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+/* ================================ */
+/* =====     NEW STYLES END       ===== */
+/* =_============================== */
+
+
 /* Loader Overlay */
 .loader-overlay {
     position: fixed;
